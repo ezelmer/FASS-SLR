@@ -1,0 +1,68 @@
+from elasticsearch import Elasticsearch
+import json
+es = Elasticsearch(['http://localhost:9200'], verify_certs=False, use_ssl=False, ssl_show_warn=False)
+f = open("/home/ezelmer/Work/pythonStuff/elasticPython/slrTitles.txt","r") #titles/queries for each SLR.
+ct = 2
+alldois = ""
+masterTrec = ""
+with open("/home/ezelmer/Work/pythonStuff/elasticPython/goodDois.txt") as file: #file containing the good Dois for each of the SLRs
+    data = file.read()
+SLRs = data.split('^') #split the files because each of the SLRs are separated by a ^ character
+for z in SLRs:
+    while (z.__contains__("\n\n")):
+      z.remove("\n\n")
+for x in f: #for each SLR title listed in the slrTitles.txt file
+        doipage = ""
+        slrTrec = ""
+        title = x
+
+        q={
+        "size":"1000",
+        "query":{
+                "multi_match":{
+                        "query": title,
+                        "fields":["title","abstract"]
+                        }
+                }
+        }
+        resp = es.search(index="cord-19-data", body=q) #response for the ES query of the title name.
+        resp['hits']['hits'] = sorted(resp['hits']['hits'], key = lambda x:x["_score"], reverse=True)
+        ranking = 1
+        for hit in resp['hits']['hits']: #for each of the hits returned by the above query
+                if(len(SLRs[ct-2])>4):
+                        if(len(hit["_source"]["doi"])>4):
+                                if(SLRs[ct-2].__contains__(hit["_source"]["doi"])):
+                                # if it is a good doi.
+                                                slrTrec = slrTrec + str(ct) +" 0 " + hit["_source"]["doi"] +" " + str(hit["_score"])  +" " + str(ranking)+ "\n" #add it as a '1' to the QREL
+                                else:
+                                        slrTrec = slrTrec + str(ct) +" 0 " + hit["_source"]["doi"] +" " +str(hit["_score"])  +" " + str(ranking)+ "\n" #Add it as a 0 to the QREL
+                                ranking = ranking + 1
+
+                #Abstract Formatting
+                abs = hit["_source"]["abstract"]
+                abs = abs.replace("\"", "?##")
+                abs = abs.replace("\'", "?#")
+                hit["_source"]["abstract"] = abs
+                strhit = str(hit)
+                strhit = strhit.replace("\'","\"")
+                strhit = strhit.replace("?##", "\\\"")
+                strhit = strhit.replace("?#", "\'")
+
+                if (len(hit["_source"]["doi"])>2): #If there is a DOI, add it
+                        doipage = doipage + hit["_source"]["doi"]  + "\n"
+        outfile = open("/home/ezelmer/Work/pythonStuff/elasticPython/srchOutputs/bm25searches/"+str(ct)+".txt", "w")
+        outfile.write(title + "\n" + slrTrec)
+        alldois = alldois + doipage + "\n"
+        masterTrec = masterTrec + slrTrec
+        outfile.close()
+        ct = ct+1
+        print("On to SLR" + str(ct) + "!")
+
+outfile2 = open("/home/ezelmer/Work/pythonStuff/elasticPython/srchOutputs/bm25searches/master.txt", "w")
+outfile2.write(alldois)
+outfile2.close()
+masterTrec = masterTrec.replace("1 0  1\n", "")
+outfiletrec = open("/home/ezelmer/Work/pythonStuff/elasticPython/srchOutputs/bm25searches/bmTrec.txt", "w")
+outfiletrec.write(masterTrec)
+outfiletrec.close()
+print("\n\n" + masterTrec)
