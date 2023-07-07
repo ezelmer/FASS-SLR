@@ -13,7 +13,7 @@ import java.math.BigDecimal;
  * @author ethan
  */
 public class Author {
-
+//test
     public static ArrayList<Author> registeredAuthors;
     public String firstname;
     public String surname;

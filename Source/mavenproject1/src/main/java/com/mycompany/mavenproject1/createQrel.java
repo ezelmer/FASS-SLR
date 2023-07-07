@@ -28,7 +28,7 @@ public class createQrel {
         int k = 2;
 
         File myFile;
-        myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\qrel.txt");
+        myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\qrel.txt");
 
         int topic = 1;
         int iteration = 0;

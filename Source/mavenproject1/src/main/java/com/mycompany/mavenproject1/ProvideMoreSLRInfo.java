@@ -71,7 +71,7 @@ public class ProvideMoreSLRInfo {
                 }
             }
         }
-        DumpSLRData(slrs);
+        SLR.DumpSLRData(slrs);
         System.out.println("\n\n\n");
         // System.out.println(fout);
         String pmcID = slrs.get(4).pmcID;
@@ -198,52 +198,6 @@ public class ProvideMoreSLRInfo {
         return grabTag(in, "pmcid=\"", "\"", true);
     }
 
-    public static void DumpSLRData(ArrayList<SLR> slrs) {
-        try {
-            File myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\Covid_SLR_Dataset.xlsx");
-
-            FileInputStream file;
-
-            file = new FileInputStream(myFile);
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
-            XSSFSheet spreadsheet = workbook.getSheetAt(0);
-            XSSFRow row;
-            Map<Integer, Object[]> data = new TreeMap<Integer, Object[]>();
-            data.put(1, new Object[]{"Abstract", "Authors", "Publisher"});
-            for (int i = 2; i < slrs.size(); i++) {
-
-                SLR s = slrs.get(i);
-                
-                data.put(i, new Object[]{s.abs, s.authors.toString(), s.publisher});
-
-                // }
-            }
-            Set<Integer> keyid = data.keySet();
-            int rowid = 0; // row number, row 1 = 0
-
-            for (int key : keyid) {
-                // System.out.println(key);
-                row = spreadsheet.getRow(rowid);
-                rowid++;
-                Object[] objectArr = data.get(key);
-                int cellid = 7; // column number,  A = 0
-                for (Object obj : objectArr) {
-                    Cell cell = row.createCell(cellid++);
-                    try {
-                        cell.setCellValue((String) (obj));
-                    } catch (Exception e) {
-                        System.out.println(e + "\n\nHERES THE ERROR STRING:" + (String) obj);
-                    }
-                }
-            }
-
-            FileOutputStream out = new FileOutputStream(myFile);
-            workbook.write(out);
-            workbook.close();
-            out.close();
-        } catch (Exception e) {
-            System.out.println("ERROR DUMPING SLR METADATA:\n" + e);
-        }
-    }
+    
 
 }

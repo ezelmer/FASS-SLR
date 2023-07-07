@@ -5,6 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 //import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+//asdf
 
 import java.io.FileInputStream;
 import java.io.File;
@@ -72,17 +73,17 @@ public class Main {
         int elastics = 0;
         Scanner keyboard = new Scanner(System.in);
         try {
-            Scanner coreIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\keys\\CoreApiKey.txt"));
+            Scanner coreIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\keys\\CoreApiKey.txt"));
             CoreApiKey = coreIn.nextLine();
-            Scanner elsIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\keys\\ElsevierApiKey.txt"));
+            Scanner elsIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\keys\\ElsevierApiKey.txt"));
             ElsevierApiKey = elsIn.nextLine();
-            Scanner springerIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\keys\\SpringerApiKey.txt"));
+            Scanner springerIn = new Scanner(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\keys\\SpringerApiKey.txt"));
             SpringerApiKey = springerIn.nextLine();
         } catch (FileNotFoundException f) {
             System.out.println("ERROR READING APIS:\n" + f);
         }
-
-        String path = ("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\AdditionalFiles\\6-6-23-ELASTIC.txt");
+        String path = "";
+        path = ("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\AdditionalFiles\\6-6-23-ELASTIC.txt");
         ArrayList<String> docs = new ArrayList<>();
         try {
             String contents = Files.readString(Paths.get(path));
@@ -221,7 +222,8 @@ public class Main {
     public static ArrayList<SLR> initialize() {
         ArrayList<SLR> slrs = new ArrayList<SLR>();
         slrs = getSLRs();
-        for (int j = 2; j < slrs.size(); j++) {
+        System.out.println("SLRs got");
+        for (int j = 2; j <= 112; j++) { //need to put 112 here because of a ghost '113'th' SLR being detected.
             System.out.println("creating reference object " + j + " of " + (slrs.size() - 1));
             slrs.get(j).references = refFileToDOIs(j);
         }
@@ -495,7 +497,7 @@ public class Main {
         dummy.references = new ArrayList<Reference>();
         slrs.add(dummy);//add a dummy value so that the indices of slrs and the index on the excel sheet line up (ease of use)
         try {
-            File myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\Covid_SLR_Dataset.xlsx");
+            File myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Covid_SLR_Dataset.xlsx");
             FileInputStream file = new FileInputStream(myFile);
             Workbook workbook = new XSSFWorkbook(file);
             DataFormatter df = new DataFormatter();
@@ -510,7 +512,12 @@ public class Main {
                     rowTerator++;
                     Cell cell = cellIterator.next();
                     String cellValue = df.formatCellValue(cell);
-                    parseSLRInfo(added, cell, rowTerator);
+                    //System.out.println("\t\tvalue:" + cellValue);
+                    try {
+                        parseSLRInfo(added, cell, rowTerator);
+                    } catch (StringIndexOutOfBoundsException e) {
+                        System.out.println("Error parsing SLR info in Main.java, ~line 520:\n" + e);
+                    }
                 }
                 rowTerator = 0;
                 slrs.add(added);
@@ -534,8 +541,27 @@ public class Main {
      */
     public static ArrayList<Reference> refFileToDOIs(int fileID) {
         ArrayList<Reference> References = new ArrayList<Reference>();
+        String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
         try {
-            File referenceFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\References\\" + fileID + ".xlsx");
+            File referenceFile;
+            if (2 <= fileID && fileID <= 23) {
+                foldPath = foldPath + "Fold_1\\";
+            }
+            if (24 <= fileID && fileID <= 45) {
+                foldPath = foldPath + "Fold_2\\";
+            }
+            if (46 <= fileID && fileID <= 67) {
+                foldPath = foldPath + "Fold_3\\";
+            }
+            if (68 <= fileID && fileID <= 89) {
+                foldPath = foldPath + "Fold_4\\";
+            }
+            if (90 <= fileID && fileID <= 112) {
+                foldPath = foldPath + "Fold_5\\";
+            }
+            foldPath = foldPath + "Excel\\" + fileID + ".xlsx";
+            referenceFile = new File(foldPath);
+
             Workbook workbook = new XSSFWorkbook(referenceFile);
             Sheet sheet = workbook.getSheetAt(0); //only dealing with sheet 0 (main sheet)
             int colTerator = 0;
@@ -602,9 +628,9 @@ public class Main {
                                 break;
                             case 8:
                                 if (added.hasBeenFound && cellValue.length() > 4) {
-                                    try{
-                                    added.dateAccepted = LocalDate.parse(cellValue);
-                                    }catch(Exception e){
+                                    try {
+                                        added.dateAccepted = LocalDate.parse(cellValue);
+                                    } catch (Exception e) {
                                         System.out.println("error adding date" + e);
                                     }
                                 }
@@ -782,7 +808,59 @@ public class Main {
                 s.abs = cellValue;
                 break;
             case 9:
+                if (cellValue.length() > 2 && cellValue.charAt(0)=='[') {
+                    StringTokenizer auths = new StringTokenizer(cellValue.substring(cellValue.lastIndexOf("[") + 1, cellValue.indexOf("]")), ",");
+                    while (auths.hasMoreTokens()) {
+                        StringTokenizer bits = new StringTokenizer(auths.nextToken(), "%");
+                        String fn = bits.nextToken();
+                        String ln = bits.nextToken();
+                        String email = bits.nextToken();
+                        Author x = new Author(fn, ln, email);
+                       s.authors.add(x);
+                    }
+                }
+                break;
+            case 10:
+                s.publisher = cellValue;
+                break;
+            case 11:
+                String in = cellValue;
+                in = in.replace("\n\n\n", "\n");
+                String[] titlequeries = in.split("\n\\(", 0);
+                for (String q : titlequeries) {
+                    if (q.length() > 3) {
+                        while (q.charAt(q.length() - 1) == '\n') {
+                            q = q.substring(0, q.length() - 1);
+                        }
+                    }
+                }
+                // StringTokenizer indivQueries = new StringTokenizer(in, "\n(");
+                s.gptTitleQueries.add(titlequeries[0]);
+                for (int i = 1; i < titlequeries.length; i++) {
+                    String x = titlequeries[i];
+                    s.gptTitleQueries.add("(" + x);
+                }
 
+                break;
+            case 12:
+                break;
+            case 13:
+                String inTAb = cellValue;
+                inTAb = inTAb.replace("\n\n\n", "\n");
+
+                String[] titleABqueries = inTAb.split("\n\\(", 0);
+                for (String q : titleABqueries) {
+                    if (q.length() > 3) {
+                        while (q.charAt(q.length() - 1) == '\n') {
+                            q = q.substring(0, q.length() - 1);
+                        }
+                    }
+                }
+                s.gptTAbQueries.add(titleABqueries[0]);
+                for (int i = 1; i < titleABqueries.length; i++) {
+                    String x = titleABqueries[i];
+                    s.gptTAbQueries.add("(" + x);
+                }
                 break;
             default:
                 break;

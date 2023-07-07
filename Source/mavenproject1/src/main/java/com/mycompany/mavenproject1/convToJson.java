@@ -34,11 +34,30 @@ public class convToJson {
         for (k = 2; k < slrs.size(); k++) {
             SLR s = slrs.get(k);
             try {
-                myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\References_JSON\\" + k + ".json");
+
+                String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
+                if (2 <= k && k <= 23) {
+                    foldPath = foldPath + "Fold_1\\";
+                }
+                if (24 <= k && k <= 45) {
+                    foldPath = foldPath + "Fold_2\\";
+                }
+                if (46 <= k && k <= 67) {
+                    foldPath = foldPath + "Fold_3\\";
+                }
+                if (68 <= k && k <= 89) {
+                    foldPath = foldPath + "Fold_4\\";
+                }
+                if (90 <= k && k <= 112) {
+                    foldPath = foldPath + "Fold_5\\";
+                }
+                foldPath = foldPath+ "Json\\" + k + ".json";
+
+                myFile = new File(foldPath);
                 if (myFile.createNewFile()) {
                     System.out.println("File Created: '" + myFile.getName() + "'");
                 } else {
-                    System.out.println("File '" + myFile. getName() + "' already Exists.");
+                    System.out.println("File '" + myFile.getName() + "' already Exists.");
                 }
 
                 try {
