@@ -52,6 +52,8 @@ july 8th deadline
  */
 public class Main {
 
+    static int[] RefLoc = {4, 1, 2, 5, 1, 2, 1, 1, 3, 3, 4, 4, 5, 2, 2, 2, 1, 4, 5, 1, 5, 1, 4, 3, 4, 5, 4, 1, 3, 5, 2, 4, 5, 1, 3, 5, 3, 5, 4, 3, 4, 2, 2, 5, 1, 1, 2, 1, 5, 2, 2, 4, 4, 5, 1, 1, 3, 5, 5, 3, 2, 4, 1, 4, 2, 2, 3, 4, 3, 4, 1, 5, 1, 1, 3, 2, 3, 2, 3, 4, 4, 3, 5, 2, 5, 2, 5, 1, 5, 2, 3, 1, 2, 3, 2, 1, 4, 5, 1, 3, 4, 5, 3, 5, 2, 4, 4, 5, 3, 3, 3};
+    //specific fold
     public static String ElsevierApiKey = "";
     public static String SpringerApiKey = "";
     public static String CoreApiKey = "";
@@ -119,65 +121,7 @@ public class Main {
         System.out.println("Done searching");
 
         //go through each of the references
-        int i = 0;
-        int j = 0;
-        int count = 0;
-        int scount = 0;
-        ArrayList<String> dois = new ArrayList<String>();
-        for (SLR s : slrs) {
-            if (s.references != null) {
-                for (Reference r : s.references) {
-                    j++;
-                    if (!dois.contains(r.doi)) {
-                        dois.add(r.doi);
-                        uniqRefs.add(r);
-                    }
-
-                    count++;
-                    //System.out.println("\n\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                    //  System.out.println(r.doi);
-                    // if (r.id.equals("not found")) {
-                    // System.out.println("\n\nOLD^, new below, \n\n");
-                    // scount++;
-
-                    System.out.println("HAVE NOT FOUND: SLR" + i + ", REF:" + (j + 1) + ": " + r.doi);
-
-                    if (!r.title.equals("Unknown Title")) {
-                        scount++;
-                    }
-                    //  System.out.println(r.title + ":\n" + r.Abstract + "\n" + r.dateAccepted + "\n" + r.authors + "\n" + r.idFormat + " " + r.id + "\n" + r.doi);
-                    System.out.println("\n\n");
-                    //  }
-
-                }
-            }
-            i++;
-            j = 0;
-        }
-
-        for (Reference r : uniqRefs) {
-            if (r.foundApis.contains("PMC") || r.idFormat.equals("PMC")) {
-                pmcs++;
-            }
-            if (r.foundApis.contains("elsevier") || r.idFormat.equals("elsevier_pii")) {
-                elsevs++;
-            }
-            if (r.foundApis.contains("Core") || r.idFormat.equals("CORE")) {
-                cores++;
-            }
-            if (r.foundApis.contains("MedBiorxiv") || r.idFormat.equals("medrxiv/biorxiv doi")) {
-                meds++;
-            }
-            if (r.foundApis.contains("Springer") || r.idFormat.equals("Springer")) {
-                springs++;
-            }
-            if (r.foundApis.contains("CROSSREF") || r.idFormat.equals("CROSSREF")) {
-                crosses++;
-            }
-            if (r.idFormat.equals("ELASTIC")) {
-                elastics++;
-            }
-        }
+        System.out.println(slrs.get(2).references.get(0).title);
 
         System.out.println("\n\n\n");
         System.out.println(slrs.get(21).doi + "\n" + slrs.get(21).pmcID + "\n" + slrs.get(21).abs);
@@ -199,10 +143,7 @@ public class Main {
         } else {
             System.out.println("Aborting!");
         }
-        System.out.println("TOTAL UNIQUE DOCUMENTS:" + dois.size());
-        for (String doi : dois) {
-            System.out.println(doi);
-        }
+     
 
         // System.out.println(r.title + ":\n" + r.Abstract + "\n" + r.dateAccepted+ "\n" + r.authors + "\n" + r.idFormat + " " + r.id + "\n" + r.doi);
         System.out.println("\n\nDONE WITH THAT\n\n");
@@ -542,24 +483,11 @@ public class Main {
     public static ArrayList<Reference> refFileToDOIs(int fileID) {
         ArrayList<Reference> References = new ArrayList<Reference>();
         String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
+       int specFold = RefLoc[fileID-2]; //specific fold
         try {
             File referenceFile;
-            if (2 <= fileID && fileID <= 23) {
-                foldPath = foldPath + "Fold_1\\";
-            }
-            if (24 <= fileID && fileID <= 45) {
-                foldPath = foldPath + "Fold_2\\";
-            }
-            if (46 <= fileID && fileID <= 67) {
-                foldPath = foldPath + "Fold_3\\";
-            }
-            if (68 <= fileID && fileID <= 89) {
-                foldPath = foldPath + "Fold_4\\";
-            }
-            if (90 <= fileID && fileID <= 112) {
-                foldPath = foldPath + "Fold_5\\";
-            }
-            foldPath = foldPath + "Excel\\" + fileID + ".xlsx";
+            
+            foldPath = foldPath + "Fold_" + specFold+"\\Excel\\" + fileID + ".xlsx";
             referenceFile = new File(foldPath);
 
             Workbook workbook = new XSSFWorkbook(referenceFile);
@@ -808,7 +736,7 @@ public class Main {
                 s.abs = cellValue;
                 break;
             case 9:
-                if (cellValue.length() > 2 && cellValue.charAt(0)=='[') {
+                if (cellValue.length() > 2 && cellValue.charAt(0) == '[') {
                     StringTokenizer auths = new StringTokenizer(cellValue.substring(cellValue.lastIndexOf("[") + 1, cellValue.indexOf("]")), ",");
                     while (auths.hasMoreTokens()) {
                         StringTokenizer bits = new StringTokenizer(auths.nextToken(), "%");
@@ -816,7 +744,7 @@ public class Main {
                         String ln = bits.nextToken();
                         String email = bits.nextToken();
                         Author x = new Author(fn, ln, email);
-                       s.authors.add(x);
+                        s.authors.add(x);
                     }
                 }
                 break;

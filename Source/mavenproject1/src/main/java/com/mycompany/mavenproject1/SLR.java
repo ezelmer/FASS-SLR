@@ -5,6 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 
+import static com.mycompany.mavenproject1.Main.RefLoc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -72,22 +73,8 @@ public class SLR {
         try {
             File referenceFile;
            String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
-            if(2<=k && k<=23){
-                foldPath = foldPath + "Fold_1\\";
-            }
-            if(24<=k && k<=45){
-                 foldPath = foldPath + "Fold_2\\";
-            }
-            if(46<=k && k<=67){
-                 foldPath = foldPath + "Fold_3\\";
-            }
-            if(68<=k && k<=89){
-                 foldPath = foldPath + "Fold_4\\";
-            }
-            if(90<=k && k<=112){
-                 foldPath = foldPath + "Fold_5\\";
-            }
-            foldPath = foldPath  + "Excel\\"+ k + ".xlsx";
+           int specFold = RefLoc[k-2]; //specific fold
+            foldPath = foldPath  + "Fold_" + specFold + "\\Excel\\"+ k + ".xlsx";
             
             File myFile = new File(foldPath);
 

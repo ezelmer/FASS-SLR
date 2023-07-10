@@ -5,6 +5,7 @@
  */
 package com.mycompany.mavenproject1;
 
+import static com.mycompany.mavenproject1.Main.RefLoc;
 import static com.mycompany.mavenproject1.Main.getSLRs;
 import static com.mycompany.mavenproject1.Main.refFileToDOIs;
 import static com.mycompany.mavenproject1.Main.initialize;
@@ -31,27 +32,13 @@ public class convToJson {
 
         //Reference r = s.references.get(0);
         //  System.out.println(r.toJson());
-        for (k = 2; k < slrs.size(); k++) {
+        for (k = 68; k <= 89; k++) {
             SLR s = slrs.get(k);
             try {
-
+                int specFold = RefLoc[k - 2]; //specific fold
                 String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
-                if (2 <= k && k <= 23) {
-                    foldPath = foldPath + "Fold_1\\";
-                }
-                if (24 <= k && k <= 45) {
-                    foldPath = foldPath + "Fold_2\\";
-                }
-                if (46 <= k && k <= 67) {
-                    foldPath = foldPath + "Fold_3\\";
-                }
-                if (68 <= k && k <= 89) {
-                    foldPath = foldPath + "Fold_4\\";
-                }
-                if (90 <= k && k <= 112) {
-                    foldPath = foldPath + "Fold_5\\";
-                }
-                foldPath = foldPath+ "Json\\" + k + ".json";
+                foldPath+="Fold_" + specFold + "\\";
+                foldPath = foldPath + "Json\\" + k + ".json";
 
                 myFile = new File(foldPath);
                 if (myFile.createNewFile()) {
