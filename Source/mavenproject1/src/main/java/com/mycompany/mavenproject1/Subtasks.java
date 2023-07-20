@@ -31,9 +31,13 @@ public class Subtasks {
         int slrNum = 0;
         int curlow = -1;
         ArrayList<Integer> retrievals = new ArrayList<>();
-
-        for (int i = 2; i <18; i++) {
-            File f = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\CovidClef2023\\covidClef2023\\Covid_19_Dataset_and_References\\AdditionalFiles\\citationGraph\\" + i + ".txt");
+        
+        //can't tell what is full text vs just abstract
+        
+     
+        
+        for (int i = 105; i <=112; i++) {
+            File f = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Additional_Files\\citationGraph\\" + i + ".txt");
             try {
                 FileWriter writer = new FileWriter(f);
                 SLR s = slrs.get(i);
@@ -49,11 +53,13 @@ public class Subtasks {
                         Reference r = s.references.get(index);
                         if (r.idFormat.equals("PMC")) {
                             System.out.println(r.title);
-                            r.genCitations(r.id);
+                            r.genCitations(r.id, true);
                             if (r.references.size() > 0) {
                                 numRefsComplete++;
                                 //r.toJson.substring(1,length-1) + , 
-                                output = output + "{" + r.toJson().substring(1,r.toJson().length() -1) + ",\"References depth 1\":[";
+                                r.FT.replaceAll("\"", "'");
+                                
+                                output = output + "{" + r.toJson().substring(1,r.toJson().length() -1)+",\"Full Text\":\""+r.FT  + "\",\"References depth 1\":[";
 
                                 for (Reference rr : r.references) {
                                     if (rr.doi.indexOf("10.") == 0) {
@@ -65,7 +71,7 @@ public class Subtasks {
                                     title = title.replace(" ", "%20");
                                     String url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=xml&retmax=1&term=" + title + "&field=title";
                                     String pmcID = (grabTag(getHTML(url), "Id", false));
-                                    rr.genCitations(pmcID);
+                                    rr.genCitations(pmcID, false);
                                     for (Reference rrr : rr.references) {
                                         if (rrr.doi.indexOf("10.") == 0) {
                                             rrr.populate();
@@ -103,37 +109,13 @@ public class Subtasks {
 
             //grab 3, 5 random articles, citation graph depth of 2, and citation network.
         }
+        
+        
+        
+        
     }
 
-    public static ArrayList<Reference> genCitations(String pmcID) {
-        ArrayList<Reference> output = new ArrayList<>();
-        String in = getHTML("https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_xml/" + pmcID + "/ascii?pretty");
-        //  System.out.println(in);
-        //  System.out.println("\n\n\n\n");
-
-        String srch = "References";
-        //System.out.println(in.indexOf(srch) + srch.length() + 1);
-        in = in.substring(in.indexOf(srch) + srch.length() + 1);
-        // in = in.substring(in.indexOf(srch) + srch.length() + 1);
-
-        //System.out.println(in);
-        srch = "<passage>";
-        while (in.indexOf(srch) != -1) {
-            String out = grabTag(in, "passage", false);
-            if (out.contains(">ref<")) {
-                Reference r = new Reference();
-                r.title = (grabTag(out, "text", false));
-                if (!r.title.equals("NULL")) {
-                    output.add(r);
-                    r.title.replace(" ", "%20");
-                    String url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=xml&retmax=1&term=" + r.title + "&field=title";
-                }
-            }
-            in = in.substring(in.indexOf(srch) + srch.length() + 1);
-
-        }
-        return (output);
-    }
+   
 
     public static String formatAsAbstract(String Abstract) {
         for (int i = 0; i < Abstract.length(); i++) {

@@ -32,7 +32,7 @@ public class convToJson {
 
         //Reference r = s.references.get(0);
         //  System.out.println(r.toJson());
-        for (k = 68; k <= 89; k++) {
+        for (k = 2; k <= 112; k++) {
             SLR s = slrs.get(k);
             try {
                 int specFold = RefLoc[k - 2]; //specific fold

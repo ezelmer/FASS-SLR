@@ -32,6 +32,7 @@ public class Reference {
     ArrayList<Author> authors; //Arraylist of Author objects.
     String miscInfo;
     String publisherName;
+    String FT;
 
     ArrayList<Reference> references;
 
@@ -42,7 +43,7 @@ public class Reference {
      * however, as DOIs are not added to the reference.
      */
     public Reference() {
-
+        this.FT = "";
         this.doi = "UnknownDOI";
         this.hasBeenFound = false;
         this.id = "not found";
@@ -222,7 +223,11 @@ public class Reference {
      * database.
      */
     public void populate() {
-
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         boolean canpop = false;
 
         String PMCID = "NULL";
@@ -284,6 +289,7 @@ public class Reference {
 
                     //DATE RELATED STUFF:
                     String dateIn = grabTag(in, "\"accepted\"", "</date>", true);
+                    this.miscInfo = grabTag(in, "<publisher-name>", "</publisher-name>", true);
                     LocalDate date = LocalDate.EPOCH;
                     if (!dateIn.equals("NULL")) {
 
@@ -829,12 +835,29 @@ public class Reference {
         }
     }
 
-    public void genCitations(String pmcID) {
+    public void genCitations(String pmcID, boolean GrabText) {
         ArrayList<Reference> output = new ArrayList<>();
         String in = getHTML("https://www.ncbi.nlm.nih.gov/research/bionlp/RESTful/pmcoa.cgi/BioC_xml/" + pmcID + "/ascii?pretty");
-        //  System.out.println(in);
-        //  System.out.println("\n\n\n\n");
-
+        String fullText = "";
+        if (GrabText) {
+            System.out.println("going to grab full text!");
+            String ftin = in;
+            while (ftin.contains("<passage>")) {
+                String passage = grabTag(ftin, "<passage>", "</passage>", true);
+                System.out.println("\tPassage:" + passage);
+                if (!passage.equals("NULL")) {
+                    String addition = grabTag(passage, "text", false);
+                    System.out.println("\n\t\t:addition: " +addition + "\n");
+                    if (!addition.equals("NULL")) {
+                        fullText = fullText+ addition + "\\n";
+                    }
+                }
+                ftin = ftin.substring(ftin.indexOf("</passage>") + 1);
+            }
+        }
+        System.out.println(fullText);
+        
+        this.FT = fullText.replace("\n", "\\n");
         String srch = "References";
         //System.out.println(in.indexOf(srch) + srch.length() + 1);
         in = in.substring(in.indexOf(srch) + srch.length() + 1);

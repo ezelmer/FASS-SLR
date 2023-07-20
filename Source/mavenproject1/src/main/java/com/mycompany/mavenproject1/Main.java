@@ -35,14 +35,7 @@ july 8th deadline
 
  */
 /**
- * Project is prepare a dataset. ML can learn from this dataset, to be able to
- * search biomedical texts BM25 algorithm, LM algorithm Prepare the
- * data/dataset.
- *
- * Learn when someone is searching, what the results should be. We will learn
- * more
- *
- * Trec EVal QREL
+ * 1742 ARE FOUND JUST ON PUBMED, ~77%
  *
  */
 //show where the crossref data comes from
@@ -119,12 +112,35 @@ public class Main {
         //corePopulate(slrs, searchAmt, searchOffset);
         //     crossrefPopulate(slrs, searchAmt, searchOffset);
         System.out.println("Done searching");
-
+        int ct = 0;
+        for (int i = 2; i <= 112; i++) {
+            SLR s = slrs.get(i);
+            for (int j = 0; j < s.references.size(); j++) {
+                Reference r = s.references.get(j);
+                if (r.idFormat.equals("PMC") || r.foundApis.contains("PMC")) {
+                    System.out.println(i + ": " + r.title);
+                    ct++;
+                 ///   r.clear();
+                }
+            }
+        }
+        System.out.println("\n\n\n\n\n");
+        for(int i = 2; i<=112; i++){
+            SLR s = slrs.get(i);
+            for(int j = 0; j<s.references.size(); j++){
+                Reference r = s.references.get(j);
+                r.populate();
+                //System.out.println(r.miscInfo);
+            }
+        }
+        
+        
+        System.out.println(ct + " Found");
         //go through each of the references
-        System.out.println(slrs.get(2).references.get(0).title);
+        
 
         System.out.println("\n\n\n");
-        System.out.println(slrs.get(21).doi + "\n" + slrs.get(21).pmcID + "\n" + slrs.get(21).abs);
+      
 
         // System.out.println("COUNT: " + scount + " OF " + count);
         System.out.println("FOUND {" + Reference.found + "}" + "out of " + Reference.total + " Referenced documents");
@@ -138,12 +154,11 @@ public class Main {
                 for (int l = 0; l < slrs.get(k).references.size(); l++) {
                     //  System.out.println(k + " " + l + " " + slrs.get(k).references.get(l).title + "ENDTITLE :" + slrs.get(k).references.get(l).foundApis); //print out all references within the scope of your search
                 }
-                //    slrs.get(k).dumpData(k); //dump the data of each SLR on the spreadsheet.
+                 //   slrs.get(k).dumpData(k); //dump the data of each SLR on the spreadsheet.
             }
         } else {
             System.out.println("Aborting!");
         }
-     
 
         // System.out.println(r.title + ":\n" + r.Abstract + "\n" + r.dateAccepted+ "\n" + r.authors + "\n" + r.idFormat + " " + r.id + "\n" + r.doi);
         System.out.println("\n\nDONE WITH THAT\n\n");
@@ -483,11 +498,11 @@ public class Main {
     public static ArrayList<Reference> refFileToDOIs(int fileID) {
         ArrayList<Reference> References = new ArrayList<Reference>();
         String foldPath = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\";
-       int specFold = RefLoc[fileID-2]; //specific fold
+        int specFold = RefLoc[fileID - 2]; //specific fold
         try {
             File referenceFile;
-            
-            foldPath = foldPath + "Fold_" + specFold+"\\Excel\\" + fileID + ".xlsx";
+
+            foldPath = foldPath + "Fold_" + specFold + "\\Excel\\" + fileID + ".xlsx";
             referenceFile = new File(foldPath);
 
             Workbook workbook = new XSSFWorkbook(referenceFile);
