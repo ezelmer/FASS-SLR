@@ -26,7 +26,9 @@ public class VerifyChatGPT {
         for (int j = 2; j < slrs.size(); j++) {
             SLR s = slrs.get(j);
             System.out.println("Verifying SLR " + j);
-            totalErrors += verifyQueries(s.gptTAbQueries, j);
+            //totalErrors += verifyQueries(s.gptTAbQueries, j);
+           totalErrors+=verifyQueries(s.gptWRefs, j);
+            totalErrors+=verifyQueries(s.gptTitleQueries, j);
             for (String x : s.gptTitleQueries) {
 
             }

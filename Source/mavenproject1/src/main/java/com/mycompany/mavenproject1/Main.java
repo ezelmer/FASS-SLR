@@ -805,6 +805,27 @@ public class Main {
                     s.gptTAbQueries.add("(" + x);
                 }
                 break;
+                
+            case 14:
+                break;
+            case 15:
+                 String inGPT = cellValue;
+                inGPT = inGPT.replace("\n\n\n", "\n");
+
+                String[] GPTqueries = inGPT.split("\n\\(", 0);
+                for (String q : GPTqueries) {
+                    if (q.length() > 3) {
+                        while (q.charAt(q.length() - 1) == '\n') {
+                            q = q.substring(0, q.length() - 1);
+                        }
+                    }
+                }
+                s.gptWRefs.add(GPTqueries[0]);
+                for (int i = 1; i < GPTqueries.length; i++) {
+                    String x = GPTqueries[i];
+                    s.gptWRefs.add("(" + x);
+                }
+                break;
             default:
                 break;
         }
