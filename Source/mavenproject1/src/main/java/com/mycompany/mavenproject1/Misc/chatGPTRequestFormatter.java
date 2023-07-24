@@ -7,9 +7,11 @@ package com.mycompany.mavenproject1.Misc;
 
 import static com.mycompany.mavenproject1.Main.initialize;
 import static com.mycompany.mavenproject1.Main.getHTML;
+import static com.mycompany.mavenproject1.Main.grabTag;
 import com.mycompany.mavenproject1.SLR;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -24,8 +26,68 @@ public class chatGPTRequestFormatter {
      */
     public static void main(String[] args) {
         ArrayList<SLR> slrs = initialize();
+        String tab = "";
+        String t = "";
+        String tabr = "";
         String base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=";
-        
+        for (int k = 2; k <= 112; k++) {
+            SLR s = slrs.get(k);
+            tab = executeQueries(s.gptTAbQueries);
+            t = executeQueries(s.gptTitleQueries);
+            tabr = executeQueries(s.gptWRefs);
+            System.out.printf("tab: %s\nt: %s\ntabr: %s\n", tab, t, tabr);
+            String path = "C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Baselines\\Runs\\Pubmed\\ChatGPT_Retrievals\\";
+            String tpath = path + "Title\\";
+            String tabpath = path + "TitleAbstract\\";
+            String tabrpath = path + "TitleAbstractRelated\\";
+            try {
+                FileWriter tW = new FileWriter(tpath + k + ".txt");
+                tW.write(t);
+                tW.close();
+            } catch (Exception e) {
+                System.out.println("Exception writing to file" + k + " in title folder");
+            }
+            try {
+                FileWriter tW = new FileWriter(tabpath + k + ".txt");
+                tW.write(tab);
+                tW.close();
+            } catch (Exception e) {
+                System.out.println("Exception writing to file" + k + " in title abstrac folder");
+            }
+            try {
+                FileWriter tW = new FileWriter(tabrpath + k + ".txt");
+                tW.write(tabr);
+                tW.close();
+            } catch (Exception e) {
+                System.out.println("Exception writing to file" + k + " in title abstract related folder");
+            }
+
+        }
+        System.out.println("\n\n");
+
+    }
+
+    public static String executeQueries(ArrayList<String> queries) {
+        String output = "";
+        String base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=";
+        for (int i = 0; i < queries.size(); i++) {
+            String query = queries.get(i);
+            query = query.replace(" ", "+");
+            if (query.length() > 10) {
+                String url = base + query;
+                String out = getHTML(url);
+                while (out.contains("<Id>")) {
+                    output += grabTag(out, "Id", false) + "\n";
+                    out = out.substring(out.indexOf("<Id>") + 4);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return output;
     }
 
     public static void createChatGPTPrompt() {
