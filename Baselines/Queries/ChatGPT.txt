@@ -1,0 +1,2 @@
+ChatGPT queries can be found in columns k, m and O of the COVID_SLR_Dataset file, Located at 
+{FASS-SLR\Dataset\Covid_SLR_Dataset.xlsx}
