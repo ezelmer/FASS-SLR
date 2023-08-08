@@ -8,6 +8,7 @@ package com.mycompany.mavenproject1;
 import static com.mycompany.mavenproject1.Main.getSLRs;
 import static com.mycompany.mavenproject1.Main.refFileToDOIs;
 import static com.mycompany.mavenproject1.Main.initialize;
+import static com.mycompany.mavenproject1.Main.RefLoc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,28 +29,78 @@ public class createQrel {
         int k = 2;
 
         File myFile;
+        File myFileMod;
+        /*
+        File file1;
+        File file2;
+        File file3;
+        File file4;
+        File file5;
+         */
         myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\qrel.txt");
-
+        myFileMod = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\qrelMod.txt");
+        /*
+        file1 = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_1.txt");
+        file2 = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_2.txt");
+        file3 = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_3.txt");
+        file4 = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_4.txt");
+        file5 = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_5.txt");
+         */
+        String[] folds = {"","","","",""};
         int topic = 1;
         int iteration = 0;
         int relevancy = 1;
         try {
             FileWriter writer = new FileWriter(myFile);
+            FileWriter writermod = new FileWriter(myFileMod);
             for (k = 2; k < slrs.size(); k++) {
                 SLR s = slrs.get(k);
-                for (Reference r : s.references) {
-                    String z = String.format("%d %d %50s %d\n", k, iteration, r.doi, relevancy);
-                    System.out.println(r.doi);
-                    writer.write(z);
+                if (s.references != null) {
+                    for (Reference r : s.references) {
+                        String z = String.format("%d %d %50s %d\n", k, iteration, r.doi, relevancy);
+                        String zMod = String.format("%d %d %s %d\n", k, iteration, r.doi, relevancy);
+                        System.out.println(r.doi);
+                        writer.write(z);
+                        writermod.write(zMod);
+                        folds[RefLoc[k - 2] - 1] = folds[RefLoc[k - 2] - 1] + z;
+                        /*
+                    switch (RefLoc[k-2]) {
+                        case 1:
+                            fold1 = fold1 + z;
+                            break;
+                        case 2:
+                            fold2 = fold2 + z;
+                            break;
+                        case 3:
+                            fold3 = fold3 + z;
+                            break;
+                        case 4:
+                            fold4 = fold4 + z;
+                            break;
+                        case 5:
+                            fold5 = fold5 + z;
+                            break;
+                    }
+                         */
+                    }
                 }
                 System.out.println("^");
             }
+            
             writer.close();
-
+            writermod.close();
+           
+            for (int i = 0; i < 5; i++) {
+                System.out.println(i);
+                myFile = new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Qrel\\fold_" + (i + 1) + ".txt");
+                writer = new FileWriter(myFile);
+                writer.write(folds[i]);
+                writer.close();
+            }
         } catch (IOException e) {
-
+            System.out.println("ERROR" + e);
         } catch (Exception e) {
-
+            System.out.println("ERROR" + e);
         }
     }
 
