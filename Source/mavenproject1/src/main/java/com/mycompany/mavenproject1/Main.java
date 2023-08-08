@@ -30,17 +30,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.StringTokenizer;
 
-/*
-july 8th deadline
 
- */
 /**
- * 1742 ARE FOUND JUST ON PUBMED, ~77%
- *
- */
-//show where the crossref data comes from
-/**
- *
+ * Populate series of related works for SLR given doi.
+ * This main file is meant to be modified to fit your needs. It's currently configured to populate all documents using pubmed.
  * @author ethan
  */
 public class Main {
@@ -52,8 +45,7 @@ public class Main {
     public static String CoreApiKey = "";
     public static int searchOffset = 0;// starts at 0
     public static int searchAmt = Math.min(searchOffset + 2 + 113, 113);//ends at 5
-    // have 97.6 of references, missing 55.
-
+   
     /**
      * @param args the command line arguments
      */
@@ -95,14 +87,12 @@ public class Main {
                 y = x + 1;
             }
 
-            // System.out.println(docs.get(docs.size()-1));
-            //System.out.println("\n\n"+contents.substring(x));
+        
         } catch (Exception e) {
             System.out.println(e);
         }
         System.out.println(docs.size());
 
-        // TODO code application logic here
         ArrayList<SLR> slrs = initialize();
         ArrayList<Reference> uniqRefs = new ArrayList<>();
         //pmcPopulate(slrs, searchAmt, searchOffset); //PMC gets 74 in 45 sec
@@ -142,7 +132,7 @@ public class Main {
         System.out.println("\n\n\n");
       
 
-        // System.out.println("COUNT: " + scount + " OF " + count);
+      
         System.out.println("FOUND {" + Reference.found + "}" + "out of " + Reference.total + " Referenced documents");
         System.out.printf("DOCUMENT RETRIEVAL BREAKDOWN: \nPMC: %d, ELSEVIER: %d, CORE: %d, MEDRXIV: %d, SPRINGER: %d, CROSSREF: %d, ELASTIC: %d\n%d TOTAL\n", pmcs, elsevs, cores, meds, springs, crosses, elastics, uniqRefs.size());
         System.out.println("Commit above changes?\ny/n");

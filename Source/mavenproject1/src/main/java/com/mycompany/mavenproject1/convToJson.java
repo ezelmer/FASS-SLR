@@ -22,6 +22,10 @@ public class convToJson {
     /**
      * @param args the command line arguments
      */
+    
+    
+    
+    //converts the SLR's Excel file to json.
     public static void main(String[] args) {
         // TODO code application logic here
         ArrayList<SLR> slrs = initialize();

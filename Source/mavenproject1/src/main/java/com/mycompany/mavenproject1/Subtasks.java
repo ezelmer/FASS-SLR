@@ -18,7 +18,8 @@ import java.util.Scanner;
 
 /**
  *
- * @author ethan
+ * @author ethan zelmer this file is used to create the citation graphs, as well
+ * as the list of
  */
 public class Subtasks {
 
@@ -26,9 +27,20 @@ public class Subtasks {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        authorsCreatedWorks(2, 112); //create files for 2nd-112th SLR
+    }
+
+    /**
+     * Create files related to each author's created works, starting at the
+     * start-th slr, and ending at the 'end'-th slr
+     *
+     * @param start index of starting slr
+     * @param end index of ending slr.
+     */
+    public static void authorsCreatedWorks(int start, int end) {
         ArrayList<SLR> slrs = initialize();
         ArrayList<Author> mAuthors = new ArrayList<>();
-        for (int i = 2; i <= 112; i++) {
+        for (int i = start; i <= end; i++) {
             System.out.println("Starting work on document " + i);
             ArrayList<Author> authors = new ArrayList<>();
             SLR s = slrs.get(i);
@@ -114,10 +126,7 @@ public class Subtasks {
             }
             System.out.println("count:" + count);
         }
-        
-        
-        
-        
+
         //master writing
         try {
             String out = "";
@@ -221,7 +230,7 @@ public class Subtasks {
 
                             }
                         }
-                        index++;
+                        index++; //move on to next doc
                     }
                 }
                 if (output.charAt(output.length() - 1) == ',') {

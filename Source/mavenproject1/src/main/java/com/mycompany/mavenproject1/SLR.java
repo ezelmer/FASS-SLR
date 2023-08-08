@@ -21,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- *
+ * SLR object type, contains relevant fields according to SLR excel/json files.
  * @author ethan
  */
 public class SLR {

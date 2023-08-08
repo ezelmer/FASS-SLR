@@ -24,6 +24,7 @@ public class generateElasticFile {
     /**
      * @param args the command line arguments
      */
+    //this file was used to create an output in a format that could be easily parsed by the python script to query the ES database.
     public static void main(String[] args) {
         // TODO code application logic here
         ArrayList<SLR> slrs = initialize();

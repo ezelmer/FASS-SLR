@@ -24,7 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- *
+ *Provide more SLR information such as abstract, authors etc, given the pmcID  of an SLR.
  * @author ethan
  */
 public class ProvideMoreSLRInfo {

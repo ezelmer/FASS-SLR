@@ -22,7 +22,7 @@ public class SLRNumGen {
     public static void main(String[] args) {
         String out = "";
         boolean[] vals = new boolean[111];
-int[]folds = {0,0,0,0,0};
+        int[] folds = {0, 0, 0, 0, 0};
         for (int i = 2; i <= 112; i++) {
 
             int x = ((int) (Math.random() * 111.0)) + 2;
@@ -54,16 +54,16 @@ int[]folds = {0,0,0,0,0};
                 folds[4]++;
             }
         }
-        
+
         System.out.println(out);
         try {
-            FileWriter writer = new FileWriter(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\master\\SLRMapping.txt"));
-            writer.write(out);
-            writer.close();
+           //FileWriter writer = new FileWriter(new File("C:\\Users\\ethan\\Desktop\\2023USRAResearch\\FASS-SLR\\FASS-SLR\\Dataset\\Folds\\master\\SLRMapping.txt"));
+           // writer.write(out);
+           // writer.close();
         } catch (Exception e) {
             System.out.println("Problem writing file:\n" + e);
         }
-        for(int x : folds){
+        for (int x : folds) {
             System.out.println(x);
         }
 

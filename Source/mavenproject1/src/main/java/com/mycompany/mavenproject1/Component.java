@@ -12,7 +12,7 @@ package com.mycompany.mavenproject1;
 import java.util.ArrayList;
 
 /**
- *
+ * @deprecated
  * @author ethan
  */
 public class Component {

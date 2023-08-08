@@ -25,7 +25,8 @@ public class chatGPTRequestFormatter {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ArrayList<SLR> slrs = initialize();
+        //execute all queries and save information.
+        ArrayList<SLR> slrs = initialize(); 
         String tab = "";
         String t = "";
         String tabr = "";
@@ -67,6 +68,12 @@ public class chatGPTRequestFormatter {
 
     }
 
+    
+    /**
+     * Performs the PUBMED queries based on an arraylist of queries in string format.
+     * @param queries in pubmed format. 
+     * @return String of pmids with a \n character to separate them.
+     */
     public static String executeQueries(ArrayList<String> queries) {
         String output = "";
         String base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=";

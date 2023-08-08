@@ -37,6 +37,13 @@ public class VerifyChatGPT {
         SLR.DumpSLRData(slrs);
     }
 
+    /**
+     * This method verifies the string arraylist of queries by checking the amount of open hard brackets, closed hard brackets, open and close parantheses etc. 
+     * If the query is not properly formed, it applies some quick fixes to see if the problem can be sorted. (ex. if there aren't enough open parentheses, place an additional at the start of the query
+     * @param givenqueries String arraylist of queries in pubmed format
+     * @param slrID id of the slr.
+     * @return the amount of errors in a given slr's queries
+     */
     public static int verifyQueries(ArrayList<String> givenqueries, int slrID) {
         int eQ = 0;
         ArrayList<String> queries = (ArrayList) givenqueries.clone();
@@ -52,8 +59,8 @@ public class VerifyChatGPT {
             int closeHB = 0; //amt closed hard brackets
             int space = 0;
             int quote = 0;
-            for (int i = 0; i < x.length(); i++) {
-                switch (x.charAt(i)) {
+            for (int i = 0; i < x.length(); i++) { //go through each character
+                switch (x.charAt(i)) { //if it's a syntax character, count it appropriately.
                     case '(':
                         openP++;
                         break;
@@ -77,12 +84,11 @@ public class VerifyChatGPT {
 
                 }
 
-                //amount of open parentheses = amount close parentheses. 
-                //every character after a ] must be a space.  dont worry about this
+                //amount of open parentheses = amount close parentheses.
                 //every every odd (") character must be preceded by either a ( or a space. dont worry about this either
                 //
             }
-            while (closeP < openP) {
+            while (closeP < openP) { //if the amount of open parantheses is greater than close parentheses, put some on the end
                 System.out.println("MODIFYING QUERY " + slrID);
                 //  if (x.charAt(x.length() - 1) != ')') {
                 x = x + ")";
@@ -91,7 +97,7 @@ public class VerifyChatGPT {
             }
             if (openP != closeP || openHB != closeHB) {
                 eQ++;
-                System.out.println("Error with SLR QUERY:" + slrID + "\n\n");
+                System.out.println("Error with SLR QUERY:" + slrID + "\n\n"); //error with a given query, need to go manually adjust it.
 
                 System.out.println(x);
                 System.out.printf("\nopenP: %d closeP: %d openHB: %d closeHB: %d \n\n", openP, closeP, openHB, closeHB);

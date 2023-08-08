@@ -209,7 +209,7 @@ public class Reference {
                     this.foundApis = this.foundApis + "_PMC";
                 }
             }
-        } else {
+        } else { //if there was an error searching for id
             this.id = "not found";
             this.idFormat = "N/A";
         }
@@ -224,16 +224,16 @@ public class Reference {
      */
     public void populate() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(100); //give some 'buffer time'
         } catch (Exception e) {
             System.out.println(e);
         }
         boolean canpop = false;
 
         String PMCID = "NULL";
-        if (doi.indexOf("10") == 0) {
+        if (doi.indexOf("10") == 0) { //if the doi starts with 10
             String base = "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/";
-            String inn = getHTML(base + "?ids=" + this.doi);
+            String inn = getHTML(base + "?ids=" + this.doi); //convert to pmcid
             PMCID = grabTag(inn, "pmcid=\"", "\"", true);
             //  PMCID = doiToPMC(r.doi);
         }
@@ -245,7 +245,7 @@ public class Reference {
                 pmcid = pmcid.substring(0, pmcid.indexOf("."));
             }
 
-            canpop = true;
+            canpop = true; //if we found a pmcID, we are able to populate this query
         } else {
             this.id = "not found";
             this.idFormat = "N/A";
@@ -256,7 +256,7 @@ public class Reference {
                     + "&metadataPrefix=pmc";
             String in = getHTML(base);
             // System.out.println("ATTEMPTING TO POPULATE");
-            if (in.indexOf("error code=\"cannotDisseminateFormat\"") == -1) { //if we have found it
+            if (in.indexOf("error code=\"cannotDisseminateFormat\"") == -1) { //if we have found a valid document
                 System.out.println("PMC DOCUMENT FOUND");
                 if (!this.hasBeenFound) {
                     this.idFormat = "PMC";
@@ -365,7 +365,7 @@ public class Reference {
      * the reference has a doi value beginning with '10.XX' This api searches
      * the Scopus, Embase, ScienceDirect, and EngineeringVillage databases
      * hosted by elsevier.
-     *
+     * @deprecated after deciding to only use Pubmed.
      * @param key Your personalized Elsevier key.
      */
     public void populateElsevier(String key) {
@@ -425,7 +425,7 @@ public class Reference {
     /**
      * Populates a reference object given a SpringerAPI key. This requires that
      * the reference has a doi value beginning with '10.XX'
-     *
+     *@deprecated after deciding to only use Pubmed.
      * @param key Your personal Springer API key. For more information, see
      * https://dev.springernature.com/
      *
@@ -491,7 +491,7 @@ public class Reference {
     /**
      * Populates a reference object given a CoreAPI key. This requires that the
      * reference has a doi value beginning with '10.XX'
-     *
+     *@deprecated after deciding to only use Pubmed.
      * @param key Your personal CoreAPI key. For more information, see
      * https://core.ac.uk/services/api
      */
@@ -561,7 +561,7 @@ public class Reference {
     /**
      * Populates a reference object using the Medrxiv api. This requires that
      * the reference has a doi value beginning with '10.XX'
-     *
+     *@deprecated after deciding to only use Pubmed.
      *
      */
     public void populateMedrxiv() {
@@ -625,7 +625,7 @@ public class Reference {
     /**
      * Populates a reference object using the Crossref api. This requires that
      * the reference has a doi value beginning with '10.XX'
-     *
+     *@deprecated after deciding to only use Pubmed.
      *
      */
     public void populateCrossref() {
