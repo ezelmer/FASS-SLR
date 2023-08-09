@@ -11,7 +11,6 @@ import static com.mycompany.mavenproject1.Main.removeLike;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.time.LocalDate;
-
 /**
  * A reference of a given SLR.
  *
@@ -621,7 +620,7 @@ public class Reference {
             }
         }
     }
-
+    
     /**
      * Populates a reference object using the Crossref api. This requires that
      * the reference has a doi value beginning with '10.XX'

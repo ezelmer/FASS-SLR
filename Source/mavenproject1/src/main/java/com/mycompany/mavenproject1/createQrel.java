@@ -63,25 +63,7 @@ public class createQrel {
                         writer.write(z);
                         writermod.write(zMod);
                         folds[RefLoc[k - 2] - 1] = folds[RefLoc[k - 2] - 1] + z;
-                        /*
-                    switch (RefLoc[k-2]) {
-                        case 1:
-                            fold1 = fold1 + z;
-                            break;
-                        case 2:
-                            fold2 = fold2 + z;
-                            break;
-                        case 3:
-                            fold3 = fold3 + z;
-                            break;
-                        case 4:
-                            fold4 = fold4 + z;
-                            break;
-                        case 5:
-                            fold5 = fold5 + z;
-                            break;
-                    }
-                         */
+                        
                     }
                 }
                 System.out.println("^");
